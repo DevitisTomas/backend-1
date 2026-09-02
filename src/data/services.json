@@ -1,1 +1,29 @@
-[]
+[
+  {
+    "id": 1,
+    "name": "Corte de cabello",
+    "description": "Corte clásico para caballero",
+    "duration": 60,
+    "price": 12000,
+    "category": "Peluquería",
+    "available": true
+  },
+  {
+    "id": 2,
+    "name": "Consulta médica",
+    "description": "Consulta médica general",
+    "duration": 30,
+    "price": 15000,
+    "category": "Salud",
+    "available": true
+  },
+  {
+    "id": 3,
+    "name": "Masaje relajante",
+    "description": "Masaje corporal de relajación",
+    "duration": 60,
+    "price": 18000,
+    "category": "Bienestar",
+    "available": false
+  }
+]
