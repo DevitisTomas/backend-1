@@ -16,14 +16,5 @@
     "price": 15000,
     "category": "Salud",
     "available": true
-  },
-  {
-    "id": 3,
-    "name": "Masaje relajante",
-    "description": "Masaje corporal de relajación",
-    "duration": 60,
-    "price": 18000,
-    "category": "Bienestar",
-    "available": false
   }
 ]
