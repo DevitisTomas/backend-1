@@ -14,13 +14,13 @@ class ServiceManager {
     async getServiceById(id) {
         const services = await this.getServices();
 
-        const service = services.find((service) => service.id === id);
+        const serviceId = Number(id);
 
-        if (!service) {
-            return null;
-        }
+        const service = services.find(
+            (service) => service.id === serviceId
+        );
 
-        return service;
+        return service || null;
     }
 
     async saveServices(services) {
@@ -40,31 +40,42 @@ class ServiceManager {
             available
         } = serviceData;
 
+        // Validación de todos los campos
         if (
-            !name ||
-            !description ||
-            !duration ||
-            !price ||
-            !category ||
-            available === undefined
+            typeof name !== "string" ||
+            name.trim() === "" ||
+
+            typeof description !== "string" ||
+            description.trim() === "" ||
+
+            duration === undefined ||
+            duration === null ||
+
+            price === undefined ||
+            price === null ||
+
+            typeof category !== "string" ||
+            category.trim() === "" ||
+
+            typeof available !== "boolean"
         ) {
-            throw new Error("Todos los campos son obligatorios.");
+            throw new Error("Todos los campos son obligatorios y deben tener un formato válido.");
         }
 
         const services = await this.getServices();
 
         const newId =
             services.length > 0
-                ? services[services.length - 1].id + 1
+                ? Math.max(...services.map((service) => service.id)) + 1
                 : 1;
 
         const newService = {
             id: newId,
-            name,
-            description,
+            name: name.trim(),
+            description: description.trim(),
             duration,
             price,
-            category,
+            category: category.trim(),
             available
         };
 
@@ -78,19 +89,23 @@ class ServiceManager {
     async updateService(id, updatedData) {
         const services = await this.getServices();
 
+        const serviceId = Number(id);
+
         const index = services.findIndex(
-            (service) => service.id === id
+            (service) => service.id === serviceId
         );
 
         if (index === -1) {
             return null;
         }
 
-        delete updatedData.id;
+        // El ID no se puede modificar
+        const { id: ignoredId, ...dataWithoutId } = updatedData;
 
         services[index] = {
             ...services[index],
-            ...updatedData
+            ...dataWithoutId,
+            id: serviceId
         };
 
         await this.saveServices(services);
@@ -101,8 +116,10 @@ class ServiceManager {
     async deleteService(id) {
         const services = await this.getServices();
 
+        const serviceId = Number(id);
+
         const index = services.findIndex(
-            (service) => service.id === id
+            (service) => service.id === serviceId
         );
 
         if (index === -1) {
