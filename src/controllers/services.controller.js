@@ -1,28 +1,15 @@
-import ServiceManager from "../managers/ServiceManager.js";
+import ServicesService from "../services/services.service.js";
 
-const serviceManager = new ServiceManager();
+const servicesService = new ServicesService();
 
-// GET /api/services
 const getServices = async (req, res) => {
     try {
-        let services = await serviceManager.getServices();
-
         const { category, available } = req.query;
 
-        if (category) {
-            services = services.filter(
-                (service) =>
-                    service.category.toLowerCase() === category.toLowerCase()
-            );
-        }
-
-        if (available !== undefined) {
-            const availableValue = available === "true";
-
-            services = services.filter(
-                (service) => service.available === availableValue
-            );
-        }
+        const services = await servicesService.getServices({
+            category,
+            available
+        });
 
         res.status(200).json(services);
     } catch (error) {
@@ -34,12 +21,11 @@ const getServices = async (req, res) => {
     }
 };
 
-// GET /api/services/:sid
 const getServiceById = async (req, res) => {
     try {
         const { sid } = req.params;
 
-        const service = await serviceManager.getServiceById(sid);
+        const service = await servicesService.getServiceById(sid);
 
         if (!service) {
             return res.status(404).json({
@@ -57,10 +43,9 @@ const getServiceById = async (req, res) => {
     }
 };
 
-// POST /api/services
 const createService = async (req, res) => {
     try {
-        const newService = await serviceManager.addService(req.body);
+        const newService = await servicesService.createService(req.body);
 
         res.status(201).json(newService);
     } catch (error) {
@@ -72,18 +57,13 @@ const createService = async (req, res) => {
     }
 };
 
-// PUT /api/services/:sid
 const updateService = async (req, res) => {
     try {
         const { sid } = req.params;
 
-        const updatedData = req.body;
-
-        delete updatedData.id;
-
-        const updatedService = await serviceManager.updateService(
+        const updatedService = await servicesService.updateService(
             sid,
-            updatedData
+            req.body
         );
 
         if (!updatedService) {
@@ -102,12 +82,11 @@ const updateService = async (req, res) => {
     }
 };
 
-// DELETE /api/services/:sid
 const deleteService = async (req, res) => {
     try {
         const { sid } = req.params;
 
-        const deletedService = await serviceManager.deleteService(sid);
+        const deletedService = await servicesService.deleteService(sid);
 
         if (!deletedService) {
             return res.status(404).json({
