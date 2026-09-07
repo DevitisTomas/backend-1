@@ -1,4 +1,4 @@
-import express from "express";
+import { Router } from "express";
 
 import {
     getServices,
@@ -8,15 +8,27 @@ import {
     deleteService
 } from "../controllers/services.controller.js";
 
-const router = express.Router();
+import validate from "../validators/validate.js";
+
+import serviceSchema from "../validators/service.validator.js";
+
+const router = Router();
 
 router.get("/", getServices);
 
 router.get("/:sid", getServiceById);
 
-router.post("/", createService);
+router.post(
+    "/",
+    validate(serviceSchema),
+    createService
+);
 
-router.put("/:sid", updateService);
+router.put(
+    "/:sid",
+    validate(serviceSchema),
+    updateService
+);
 
 router.delete("/:sid", deleteService);
 

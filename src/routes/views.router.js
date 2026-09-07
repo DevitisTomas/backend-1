@@ -8,6 +8,7 @@ import {
 const router = Router();
 
 router.get("/services", getServicesView);
+
 router.get("/availability", getAvailabilityView);
 
 export default router;
