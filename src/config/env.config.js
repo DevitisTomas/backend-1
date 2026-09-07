@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const requiredEnvVars = ["PORT", "NODE_ENV"];
+const requiredEnvVars = ["PORT", "NODE_ENV", "MONGO_URI"];
 
 requiredEnvVars.forEach((envVar) => {
     if (!process.env[envVar]) {
@@ -13,4 +13,5 @@ requiredEnvVars.forEach((envVar) => {
 export default {
     PORT: process.env.PORT,
     NODE_ENV: process.env.NODE_ENV,
+    MONGO_URI: process.env.MONGO_URI
 };

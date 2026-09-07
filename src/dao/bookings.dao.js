@@ -1,63 +1,32 @@
-import fs from "fs/promises";
-import path from "path";
+import Booking from "../models/booking.model.js";
 
 class BookingsDAO {
-    constructor() {
-        this.path = path.resolve("src/data/bookings.json");
-    }
 
-    async getAll() {
-        const data = await fs.readFile(this.path, "utf-8");
-        return JSON.parse(data);
+    async create(booking) {
+
+        return await Booking.create(booking);
+
     }
 
     async getById(id) {
-        const bookings = await this.getAll();
 
-        return bookings.find(
-            (booking) => booking.id === Number(id)
-        ) || null;
-    }
+        return await Booking.findById(id);
 
-    async create(booking) {
-        const bookings = await this.getAll();
-
-        bookings.push(booking);
-
-        await fs.writeFile(
-            this.path,
-            JSON.stringify(bookings, null, 2)
-        );
-
-        return booking;
     }
 
     async update(id, bookingData) {
-        const bookings = await this.getAll();
 
-        const bookingId = Number(id);
-
-        const index = bookings.findIndex(
-            (booking) => booking.id === bookingId
+        return await Booking.findByIdAndUpdate(
+            id,
+            bookingData,
+            {
+                new: true,
+                runValidators: true
+            }
         );
 
-        if (index === -1) {
-            return null;
-        }
-
-        bookings[index] = {
-            ...bookings[index],
-            ...bookingData,
-            id: bookingId
-        };
-
-        await fs.writeFile(
-            this.path,
-            JSON.stringify(bookings, null, 2)
-        );
-
-        return bookings[index];
     }
+
 }
 
 export default BookingsDAO;

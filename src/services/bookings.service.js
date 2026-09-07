@@ -14,25 +14,15 @@ class BookingsService {
 
     async createBooking(bookingData) {
 
-        const bookings = await this.getAllBookings();
-
-        const newId =
-            bookings.length > 0
-                ? Math.max(...bookings.map((booking) => booking.id)) + 1
-                : 1;
-
         const newBooking = {
-            id: newId,
+
             ...bookingData,
+
             services: bookingData.services || []
+
         };
 
         return await this.repository.create(newBooking);
-    }
-
-    async getAllBookings() {
-
-        return await this.repository.getAll();
 
     }
 
@@ -61,7 +51,9 @@ class BookingsService {
         }
 
         const existingService = booking.services.find(
-            (item) => item.service === Number(serviceId)
+
+            (item) => item.service.toString() === serviceId.toString()
+
         );
 
         if (existingService) {
@@ -71,16 +63,23 @@ class BookingsService {
         } else {
 
             booking.services.push({
-                service: Number(serviceId),
+
+                service: serviceId,
+
                 quantity: 1
+
             });
 
         }
 
         return await this.repository.update(
+
             bookingId,
+
             booking
+
         );
+
     }
 
 }

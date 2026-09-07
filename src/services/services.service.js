@@ -34,6 +34,7 @@ class ServicesService {
         }
 
         return services;
+
     }
 
     async getServiceById(id) {
@@ -78,16 +79,7 @@ class ServicesService {
 
         }
 
-        const services = await this.repository.getAll();
-
-        const newId =
-            services.length > 0
-                ? Math.max(...services.map((service) => service.id)) + 1
-                : 1;
-
         const newService = {
-
-            id: newId,
 
             name: name.trim(),
 
@@ -117,7 +109,7 @@ class ServicesService {
 
         }
 
-        const { id: ignoredId, ...dataWithoutId } = updatedData;
+        const { id: ignoredId, _id: ignoredMongoId, ...dataWithoutId } = updatedData;
 
         return await this.repository.update(
             id,
