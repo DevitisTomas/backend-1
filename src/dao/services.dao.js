@@ -1,27 +1,21 @@
+
 import Service from "../models/service.model.js";
 
 class ServicesDAO {
 
     async getAll() {
-
-        return await Service.find();
-
+        return await Service.find().lean();
     }
 
     async getById(id) {
-
-        return await Service.findById(id);
-
+        return await Service.findById(id).lean();
     }
 
     async create(service) {
-
         return await Service.create(service);
-
     }
 
     async update(id, serviceData) {
-
         return await Service.findByIdAndUpdate(
             id,
             serviceData,
@@ -30,15 +24,11 @@ class ServicesDAO {
                 runValidators: true
             }
         );
-
     }
 
     async delete(id) {
-
         return await Service.findByIdAndDelete(id);
-
     }
-
 }
 
 export default ServicesDAO;

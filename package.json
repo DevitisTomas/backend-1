@@ -12,6 +12,8 @@
   "dependencies": {
     "dotenv": "^17.2.1",
     "express": "^5.2.1",
-    "mongoose": "^9.9.5"
+    "express-handlebars": "^9.0.1",
+    "mongoose": "^9.9.5",
+    "socket.io": "^4.8.3"
   }
 }

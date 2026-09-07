@@ -1,0 +1,31 @@
+<section class="availability">
+    <h2>Disponibilidad de servicios</h2>
+
+    <div id="availability-list">
+        {{#each services}}
+        <article class="availability-item">
+            <h3>{{name}}</h3>
+
+            <p>
+                <strong>Categoría:</strong>
+                {{category}}
+            </p>
+
+            <p>
+                <strong>Duración:</strong>
+                {{duration}} minutos
+            </p>
+
+            <p>
+                <strong>Estado:</strong>
+
+                {{#if available}}
+                Disponible
+                {{else}}
+                No disponible
+                {{/if}}
+            </p>
+        </article>
+        {{/each}}
+    </div>
+</section>
