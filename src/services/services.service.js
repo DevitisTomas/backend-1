@@ -9,29 +9,50 @@ class ServicesService {
     }
 
     async getServices(filters = {}) {
-        let services = await this.repository.getAll();
 
-        const { category, available } = filters;
+        const {
+            category,
+            available,
+            page = 1,
+            limit = 10,
+            sortBy,
+            order
+        } = filters;
 
-        if (category) {
-            services = services.filter(
-                (service) =>
-                    service.category.toLowerCase() === category.toLowerCase()
-            );
-        }
+        const currentPage = Math.max(Number(page) || 1, 1);
+        const currentLimit = Math.max(Number(limit) || 10, 1);
 
-        if (available !== undefined) {
-            const availableValue = available === "true";
+        const skip = (currentPage - 1) * currentLimit;
 
-            services = services.filter(
-                (service) => service.available === availableValue
-            );
-        }
+        const availableValue =
+            available === undefined
+                ? undefined
+                : available === "true";
 
-        return services;
+        const result = await this.repository.getAll({
+            category,
+            available: availableValue,
+            skip,
+            limit: currentLimit,
+            sortBy,
+            order
+        });
+
+        const totalPages = Math.ceil(
+            result.total / currentLimit
+        );
+
+        return {
+            services: result.services,
+            total: result.total,
+            page: currentPage,
+            limit: currentLimit,
+            totalPages
+        };
     }
 
     async getServiceById(id) {
+
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return null;
         }
@@ -40,6 +61,7 @@ class ServicesService {
     }
 
     async createService(serviceData) {
+
         const {
             name,
             description,
@@ -85,6 +107,7 @@ class ServicesService {
     }
 
     async updateService(id, updatedData) {
+
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return null;
         }
@@ -108,6 +131,7 @@ class ServicesService {
     }
 
     async deleteService(id) {
+
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return null;
         }

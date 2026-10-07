@@ -1,5 +1,3 @@
-import mongoose from "mongoose";
-
 import BookingsRepository from "../repositories/bookings.repository.js";
 
 import ServicesRepository from "../repositories/services.repository.js";
@@ -12,6 +10,7 @@ class BookingsService {
     }
 
     async createBooking(bookingData) {
+
         const newBooking = {
             ...bookingData,
             services: bookingData.services || []
@@ -21,22 +20,14 @@ class BookingsService {
     }
 
     async getBookingById(id) {
-        if (!mongoose.Types.ObjectId.isValid(id)) {
-            return null;
-        }
 
         return await this.repository.getById(id);
+
     }
 
     async addServiceToBooking(bookingId, serviceId) {
-        if (
-            !mongoose.Types.ObjectId.isValid(bookingId) ||
-            !mongoose.Types.ObjectId.isValid(serviceId)
-        ) {
-            return "invalid_id";
-        }
 
-        const booking = await this.repository.getById(bookingId);
+        const booking = await this.repository.getByIdRaw(bookingId);
 
         if (!booking) {
             return null;
@@ -45,20 +36,27 @@ class BookingsService {
         const service = await this.servicesRepository.getById(serviceId);
 
         if (!service) {
-            return "service_not_found";
+            const error = new Error("Servicio no encontrado");
+            error.status = 404;
+            throw error;
         }
 
         const existingService = booking.services.find(
-            (item) => item.service.toString() === serviceId.toString()
+            (item) =>
+                item.service.toString() === serviceId.toString()
         );
 
         if (existingService) {
+
             existingService.quantity += 1;
+
         } else {
+
             booking.services.push({
                 service: serviceId,
                 quantity: 1
             });
+
         }
 
         return await this.repository.update(

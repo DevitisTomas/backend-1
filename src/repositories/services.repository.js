@@ -8,9 +8,9 @@ class ServicesRepository {
 
     }
 
-    async getAll() {
+    async getAll(filters = {}) {
 
-        return await this.dao.getAll();
+        return await this.dao.getAll(filters);
 
     }
 
@@ -28,7 +28,10 @@ class ServicesRepository {
 
     async update(id, serviceData) {
 
-        return await this.dao.update(id, serviceData);
+        return await this.dao.update(
+            id,
+            serviceData
+        );
 
     }
 

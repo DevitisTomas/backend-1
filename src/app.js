@@ -6,6 +6,8 @@ import servicesRouter from "./routes/services.router.js";
 import bookingsRouter from "./routes/bookings.router.js";
 import viewsRouter from "./routes/views.router.js";
 
+import errorMiddleware from "./middlewares/errorMiddleware.js";
+
 const app = express();
 
 app.use(express.json());
@@ -33,5 +35,7 @@ app.get("/", (req, res) => {
         message: "API de servicios funcionando correctamente"
     });
 });
+
+app.use(errorMiddleware);
 
 export default app;

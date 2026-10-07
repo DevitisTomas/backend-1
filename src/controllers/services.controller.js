@@ -4,181 +4,104 @@ const servicesService = new ServicesService();
 
 const getServices = async (req, res) => {
 
-    try {
+    const {
+        category,
+        available,
+        page,
+        limit,
+        sortBy,
+        order
+    } = req.query;
 
-        const {
-            category,
-            available,
-            page,
-            limit,
-            sortBy,
-            order
-        } = req.query;
+    const result = await servicesService.getServices({
+        category,
+        available,
+        page,
+        limit,
+        sortBy,
+        order
+    });
 
-        const result = await servicesService.getServices({
-            category,
-            available,
-            page,
-            limit,
-            sortBy,
-            order
-        });
-
-        res.status(200).json(result);
-
-    } catch (error) {
-
-        console.error(error);
-
-        res.status(500).json({
-            error: "Error al obtener los servicios"
-        });
-
-    }
-
+    res.status(200).json(result);
 };
 
 const getServiceById = async (req, res) => {
 
-    try {
+    const { sid } = req.params;
 
-        const { sid } = req.params;
+    const service = await servicesService.getServiceById(sid);
 
-        const service = await servicesService.getServiceById(sid);
-
-        if (!service) {
-
-            return res.status(404).json({
-                error: "Servicio no encontrado"
-            });
-
-        }
-
-        res.status(200).json(service);
-
-    } catch (error) {
-
-        console.error(error);
-
-        res.status(500).json({
-            error: "Error al obtener el servicio"
+    if (!service) {
+        return res.status(404).json({
+            error: "Servicio no encontrado"
         });
-
     }
 
+    res.status(200).json(service);
 };
 
 const createService = async (req, res) => {
 
-    try {
+    const newService = await servicesService.createService(req.body);
 
-        const newService = await servicesService.createService(req.body);
+    const io = req.app.get("io");
 
-        const io = req.app.get("io");
+    if (io) {
+        const result = await servicesService.getServices();
 
-        if (io) {
-
-            const result = await servicesService.getServices();
-
-            io.emit("servicesUpdated", result.services);
-
-        }
-
-        res.status(201).json(newService);
-
-    } catch (error) {
-
-        console.error(error);
-
-        res.status(400).json({
-            error: error.message
-        });
-
+        io.emit("servicesUpdated", result.services);
     }
 
+    res.status(201).json(newService);
 };
 
 const updateService = async (req, res) => {
 
-    try {
+    const { sid } = req.params;
 
-        const { sid } = req.params;
+    const updatedService = await servicesService.updateService(
+        sid,
+        req.body
+    );
 
-        const updatedService = await servicesService.updateService(
-            sid,
-            req.body
-        );
-
-        if (!updatedService) {
-
-            return res.status(404).json({
-                error: "Servicio no encontrado"
-            });
-
-        }
-
-        const io = req.app.get("io");
-
-        if (io) {
-
-            const result = await servicesService.getServices();
-
-            io.emit("servicesUpdated", result.services);
-
-        }
-
-        res.status(200).json(updatedService);
-
-    } catch (error) {
-
-        console.error(error);
-
-        res.status(500).json({
-            error: "Error al actualizar el servicio"
+    if (!updatedService) {
+        return res.status(404).json({
+            error: "Servicio no encontrado"
         });
-
     }
 
+    const io = req.app.get("io");
+
+    if (io) {
+        const result = await servicesService.getServices();
+
+        io.emit("servicesUpdated", result.services);
+    }
+
+    res.status(200).json(updatedService);
 };
 
 const deleteService = async (req, res) => {
 
-    try {
+    const { sid } = req.params;
 
-        const { sid } = req.params;
+    const deletedService = await servicesService.deleteService(sid);
 
-        const deletedService = await servicesService.deleteService(sid);
-
-        if (!deletedService) {
-
-            return res.status(404).json({
-                error: "Servicio no encontrado"
-            });
-
-        }
-
-        const io = req.app.get("io");
-
-        if (io) {
-
-            const result = await servicesService.getServices();
-
-            io.emit("servicesUpdated", result.services);
-
-        }
-
-        res.status(200).json(deletedService);
-
-    } catch (error) {
-
-        console.error(error);
-
-        res.status(500).json({
-            error: "Error al eliminar el servicio"
+    if (!deletedService) {
+        return res.status(404).json({
+            error: "Servicio no encontrado"
         });
-
     }
 
+    const io = req.app.get("io");
+
+    if (io) {
+        const result = await servicesService.getServices();
+
+        io.emit("servicesUpdated", result.services);
+    }
+
+    res.status(200).json(deletedService);
 };
 
 export {
