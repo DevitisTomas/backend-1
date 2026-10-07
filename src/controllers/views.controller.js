@@ -4,11 +4,11 @@ const servicesService = new ServicesService();
 
 const getServicesView = async (req, res) => {
     try {
-        const services = await servicesService.getServices();
+        const result = await servicesService.getServices();
 
         res.render("services", {
             title: "Servicios",
-            services
+            services: result.services
         });
     } catch (error) {
         console.error(error);
@@ -19,11 +19,11 @@ const getServicesView = async (req, res) => {
 
 const getAvailabilityView = async (req, res) => {
     try {
-        const services = await servicesService.getServices();
+        const result = await servicesService.getServices();
 
         res.render("availability", {
             title: "Disponibilidad",
-            services
+            services: result.services
         });
     } catch (error) {
         console.error(error);
